@@ -1,0 +1,247 @@
+from flask import Flask, request, redirect, session, send_from_directory, render_template_string
+import os
+
+app = Flask(__name__)
+app.secret_key = "zx_gaming_secret_key"
+
+UPLOAD_FOLDER = "files"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+PASSWORD = "18273645"
+
+
+# ---------- LOGIN PAGE ----------
+LOGIN_PAGE = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>ZX LOCK</title>
+<style>
+body {
+    background: black;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+.box {
+    margin-top: 150px;
+    display: inline-block;
+    padding: 30px;
+    border: 2px solid #b300ff;
+    box-shadow: 0 0 25px #b300ff;
+    border-radius: 10px;
+}
+
+h1 {
+    color: #d400ff;
+}
+
+input {
+    padding: 10px;
+    width: 220px;
+    background: #1a002b;
+    border: 1px solid #b300ff;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: #b300ff;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.error {
+    color: red;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h1>🔒 ZX GAMING LOCK</h1>
+
+    {% if error %}
+    <p class="error">Wrong Password</p>
+    {% endif %}
+
+    <form method="POST">
+        <input type="password" name="password" placeholder="Enter Password">
+        <br><br>
+        <button>ENTER</button>
+    </form>
+</div>
+
+</body>
+</html>
+"""
+
+
+# ---------- MAIN PAGE ----------
+MAIN_PAGE = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>ZX GAMING HUB</title>
+
+<style>
+body {
+    background: radial-gradient(circle, #0a0014, #000);
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+    background: #12001f;
+    border-bottom: 2px solid #b300ff;
+    box-shadow: 0 0 25px #b300ff;
+}
+
+h1 {
+    color: #d400ff;
+}
+
+.container {
+    width: 55%;
+    margin: auto;
+}
+
+.script {
+    background: #1a002b;
+    border: 1px solid #b300ff;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #6a00ff;
+}
+
+button {
+    padding: 10px;
+    background: #b300ff;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.delete {
+    background: red;
+    box-shadow: 0 0 10px red;
+}
+
+.box {
+    margin-top: 20px;
+    padding: 20px;
+    background: #12001f;
+    border: 1px solid #b300ff;
+    border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>💜 ZX GAMING HUB</h1>
+</header>
+
+<div class="container">
+
+{{scripts}}
+
+<div class="box">
+<h2>📤 Upload File</h2>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+<input type="file" name="file" required>
+<br><br>
+<button>UPLOAD</button>
+</form>
+</div>
+
+</div>
+
+</body>
+</html>
+"""
+
+
+# ---------- ROUTES ----------
+@app.route("/", methods=["GET", "POST"])
+def index():
+
+    if not session.get("logged_in"):
+
+        if request.method == "POST":
+            if request.form.get("password") == PASSWORD:
+                session["logged_in"] = True
+                return redirect("/")
+            return render_template_string(LOGIN_PAGE, error=True)
+
+        return render_template_string(LOGIN_PAGE, error=False)
+
+    files = os.listdir(UPLOAD_FOLDER)
+
+    scripts = ""
+
+    for i, f in enumerate(files):
+        scripts += f"""
+        <div class="script">
+            ⚡ Script {i+1} - {f}
+            <br><br>
+
+            <a href="/files/{f}">
+                <button>DOWNLOAD</button>
+            </a>
+
+            <form method="POST" action="/delete/{f}" style="display:inline;">
+                <button class="delete">DELETE</button>
+            </form>
+        </div>
+        """
+
+    if not scripts:
+        scripts = "<p>No files uploaded yet</p>"
+
+    return render_template_string(MAIN_PAGE.replace("{{scripts}}", scripts))
+
+
+# ---------- UPLOAD ----------
+@app.route("/upload", methods=["POST"])
+def upload():
+    if not session.get("logged_in"):
+        return redirect("/")
+
+    file = request.files["file"]
+    if file:
+        file.save(os.path.join(UPLOAD_FOLDER, file.filename))
+    return redirect("/")
+
+
+# ---------- DOWNLOAD ----------
+@app.route("/files/<filename>")
+def download(filename):
+    if not session.get("logged_in"):
+        return redirect("/")
+    return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)
+
+
+# ---------- DELETE ----------
+@app.route("/delete/<filename>", methods=["POST"])
+def delete(filename):
+    if not session.get("logged_in"):
+        return redirect("/")
+
+    path = os.path.join(UPLOAD_FOLDER, filename)
+    if os.path.exists(path):
+        os.remove(path)
+    return redirect("/")
+
+
+# ---------- PUBLIC RENDER FIX ----------
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)

@@ -24,9 +24,9 @@ DISCORD_USER_ID = os.getenv('DISCORD_USER_ID', '')  # Your Discord User ID for D
 # Rank Calculation Thresholds
 RANK_THRESHOLDS = {
     'Demon Eye': 85,
-    'Developer': 65,
-    'Programmer': 40,
-    'Member': 0
+    'Elite Hunter': 65,
+    'Bounty Hunter': 40,
+    'Applicant': 0
 }
 
 def calculate_skill_score(data):
@@ -97,7 +97,7 @@ def determine_rank(score):
 
 def format_discord_message(data, score, rank):
     """
-    Format the assessment data into a Discord embed message
+    Format the assessment data into a Discord embed message for ZX-Trickster
     """
     
     languages_str = ', '.join(data.get('languages', [])) or 'None listed'
@@ -108,18 +108,18 @@ def format_discord_message(data, score, rank):
     # Determine color based on rank
     rank_colors = {
         'Demon Eye': 0xFF0000,      # Red
-        'Developer': 0xB300FF,      # Purple
-        'Programmer': 0x00FFFF,    # Cyan
-        'Member': 0x808080          # Gray
+        'Elite Hunter': 0xB300FF,   # Purple
+        'Bounty Hunter': 0x00FFFF,  # Cyan
+        'Applicant': 0x808080       # Gray
     }
     
     embed = {
-        "title": f"🎮 New Skill Assessment - {rank.upper()}",
-        "description": f"Skill Score: {score}/100",
+        "title": f"🎯 NEW BOUNTY APPLICATION - {rank.upper()}",
+        "description": f"Skill Score: {score}/100 | Tier: {rank}",
         "color": rank_colors.get(rank, 0xB300FF),
         "fields": [
             {
-                "name": "👤 Personal Info",
+                "name": "👤 Applicant Info",
                 "value": f"**Name:** {data.get('name')}\n**Discord:** {data.get('discord')}\n**Email:** {data.get('email')}",
                 "inline": False
             },
@@ -129,7 +129,7 @@ def format_discord_message(data, score, rank):
                 "inline": True
             },
             {
-                "name": "⭐ Recommended Rank",
+                "name": "⭐ Recommended Tier",
                 "value": rank,
                 "inline": True
             },
@@ -164,13 +164,13 @@ def format_discord_message(data, score, rank):
                 "inline": True
             },
             {
-                "name": "📅 Submitted",
+                "name": "📅 Applied",
                 "value": data.get('submittedAt', datetime.now().isoformat()),
                 "inline": False
             }
         ],
         "footer": {
-            "text": "ZX Gaming Hub Skill Assessment"
+            "text": "🎯 ZX Bounty Program - Reviewed by ZX-Trickster"
         }
     }
     
@@ -203,8 +203,8 @@ def submit_assessment():
         # Send to Discord webhook
         if DISCORD_WEBHOOK_URL:
             webhook_data = {
-                "embeds": [embed],
-                "content": f"📢 New assessment from {data.get('name')} (@{data.get('discord')})"
+                "content": f"🎯 NEW BOUNTY APPLICATION from {data.get('name')} (@{data.get('discord')}) - Tier: {rank}",
+                "embeds": [embed]
             }
             
             response = requests.post(
@@ -219,7 +219,7 @@ def submit_assessment():
         
         return jsonify({
             'success': True,
-            'message': f'Assessment submitted! You have been evaluated for the {rank} rank.',
+            'message': f'✅ Application submitted! ZX-Trickster will review your bounty tier ({rank}) shortly.',
             'score': score,
             'rank': rank
         }), 200
@@ -236,15 +236,20 @@ def health_check():
 @app.route('/', methods=['GET'])
 def home():
     """Home endpoint - serve form or status"""
-    return jsonify({
-        'status': 'running',
-        'service': 'ZX Gaming Hub Skill Assessment',
-        'version': '1.0',
-        'endpoints': {
-            'health': '/health',
-            'submit': '/submit-assessment (POST)'
-        }
-    }), 200
+    try:
+        with open('skill-assessment.html', 'r', encoding='utf-8') as f:
+            return f.read(), 200, {'Content-Type': 'text/html'}
+    except:
+        return jsonify({
+            'status': 'running',
+            'service': 'ZX Gaming Hub Skill Assessment',
+            'version': '1.0',
+            'endpoints': {
+                'health': '/health',
+                'submit': '/submit-assessment (POST)',
+                'form': '/'
+            }
+        }), 200
 
 if __name__ == '__main__':
     # Get port from environment or use default 5000

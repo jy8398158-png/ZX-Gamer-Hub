@@ -85,83 +85,145 @@ MAIN_PAGE = """
 <html>
 <head>
 <title>ZX GAMING HUB</title>
-
 <style>
 body {
     background: radial-gradient(circle, #0a0014, #000);
     color: white;
     font-family: Arial;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
-header {
-    padding: 20px;
-    background: #12001f;
-    border-bottom: 2px solid #b300ff;
-    box-shadow: 0 0 25px #b300ff;
+#world {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #b300ff, #000);
+    box-shadow: 0 0 50px #b300ff, inset 0 0 50px rgba(179, 0, 255, 0.5);
+    animation: spin 20s linear infinite;
+    transform-style: preserve-3d;
 }
 
-h1 {
-    color: #d400ff;
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotateY(0deg); }
+    to { transform: translate(-50%, -50%) rotateY(360deg); }
 }
 
-.container {
-    width: 55%;
-    margin: auto;
+.code {
+    position: absolute;
+    color: #00ff00;
+    font-size: 12px;
+    font-family: monospace;
+    animation: orbit 10s linear infinite;
+    transform-style: preserve-3d;
 }
 
-.script {
+@keyframes orbit {
+    from { transform: rotateY(0deg) translateZ(150px) rotateY(0deg); }
+    to { transform: rotateY(360deg) translateZ(150px) rotateY(-360deg); }
+}
+
+#packet-tracer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    height: 200px;
     background: #1a002b;
     border: 1px solid #b300ff;
-    padding: 15px;
-    margin: 15px 0;
     border-radius: 10px;
-    box-shadow: 0 0 15px #6a00ff;
-}
-
-button {
     padding: 10px;
-    background: #b300ff;
-    border: none;
-    color: white;
-    cursor: pointer;
+    box-shadow: 0 0 15px #b300ff;
 }
 
-.delete {
-    background: red;
-    box-shadow: 0 0 10px red;
+#packets {
+    height: 150px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 10px;
 }
 
-.box {
-    margin-top: 20px;
-    padding: 20px;
-    background: #12001f;
+#wifi-monitor {
+    position: absolute;
+    top: 240px;
+    left: 20px;
+    width: 300px;
+    background: #1a002b;
     border: 1px solid #b300ff;
     border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 15px #b300ff;
+}
+
+#traffic {
+    margin-bottom: 10px;
+}
+
+#speed {
+    margin-top: 10px;
 }
 </style>
-
 </head>
 <body>
 
-<header>
-<h1>💜 ZX GAMING HUB</h1>
-</header>
-
-<div class="container">
-
-{{scripts}}
-
-<div class="box">
-<h2>📤 Upload File</h2>
-<form method="POST" action="/upload" enctype="multipart/form-data">
-<input type="file" name="file" required>
-<br><br>
-<button>UPLOAD</button>
-</form>
+<div id="world">
+    <div class="code" style="animation-delay: 0s;">010101</div>
+    <div class="code" style="animation-delay: 1s;">101010</div>
+    <div class="code" style="animation-delay: 2s;">011011</div>
+    <div class="code" style="animation-delay: 3s;">110011</div>
+    <div class="code" style="animation-delay: 4s;">001100</div>
+    <div class="code" style="animation-delay: 5s;">111000</div>
+    <div class="code" style="animation-delay: 6s;">000111</div>
+    <div class="code" style="animation-delay: 7s;">100100</div>
+    <div class="code" style="animation-delay: 8s;">010010</div>
+    <div class="code" style="animation-delay: 9s;">101101</div>
 </div>
 
+<div id="packet-tracer">
+    <h3>Packet Tracer</h3>
+    <div id="packets">
+        <!-- Packets will be added here -->
+    </div>
 </div>
+
+<div id="wifi-monitor">
+    <div id="traffic">
+        <h4>WIFI Traffic</h4>
+        <p>Upload: <span id="upload-traffic">0 KB/s</span></p>
+        <p>Download: <span id="download-traffic">0 KB/s</span></p>
+    </div>
+    <div id="speed">
+        <h4>WIFI Speed</h4>
+        <p>Current: <span id="current-speed">0 Mbps</span></p>
+        <p>Max: <span id="max-speed">100 Mbps</span></p>
+    </div>
+</div>
+
+<script>
+function addPacket() {
+    const packetsDiv = document.getElementById('packets');
+    const packet = document.createElement('div');
+    packet.textContent = 'Packet: ' + Math.random().toString(36).substr(2, 9) + ' -> ' + Math.random().toString(36).substr(2, 9);
+    packetsDiv.appendChild(packet);
+    packetsDiv.scrollTop = packetsDiv.scrollHeight;
+    setTimeout(() => packetsDiv.removeChild(packet), 5000);
+}
+
+setInterval(addPacket, 1000);
+
+function updateTraffic() {
+    document.getElementById('upload-traffic').textContent = Math.floor(Math.random() * 100) + ' KB/s';
+    document.getElementById('download-traffic').textContent = Math.floor(Math.random() * 200) + ' KB/s';
+    document.getElementById('current-speed').textContent = Math.floor(Math.random() * 50) + ' Mbps';
+}
+
+setInterval(updateTraffic, 2000);
+</script>
 
 </body>
 </html>

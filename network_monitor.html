@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZX Network Monitor</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #0a0014, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #world {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #b300ff, #000);
+            box-shadow: 0 0 50px #b300ff, inset 0 0 50px rgba(179, 0, 255, 0.5);
+            animation: spin 20s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateY(360deg); }
+        }
+
+        .code {
+            position: absolute;
+            color: #00ff00;
+            font-size: 12px;
+            font-family: monospace;
+            animation: orbit 10s linear infinite;
+            transform-style: preserve-3d;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        @keyframes orbit {
+            from { transform: rotateY(0deg) translateZ(150px) rotateY(0deg); }
+            to { transform: rotateY(360deg) translateZ(150px) rotateY(-360deg); }
+        }
+
+        #packet-tracer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 350px;
+            height: 250px;
+            background: rgba(26, 0, 43, 0.9);
+            border: 1px solid #b300ff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 15px #b300ff;
+            backdrop-filter: blur(10px);
+        }
+
+        #packets {
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 10px;
+            color: #00ff00;
+        }
+
+        #wifi-monitor {
+            position: absolute;
+            top: 290px;
+            left: 20px;
+            width: 350px;
+            background: rgba(26, 0, 43, 0.9);
+            border: 1px solid #b300ff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 15px #b300ff;
+            backdrop-filter: blur(10px);
+        }
+
+        #traffic, #speed {
+            margin: 10px 0;
+        }
+
+        h3, h4 {
+            margin: 0 0 10px 0;
+            color: #d400ff;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="world">
+        <div class="code" style="animation-delay: 0s;">010101</div>
+        <div class="code" style="animation-delay: 1s;">101010</div>
+        <div class="code" style="animation-delay: 2s;">011011</div>
+        <div class="code" style="animation-delay: 3s;">110011</div>
+        <div class="code" style="animation-delay: 4s;">001100</div>
+        <div class="code" style="animation-delay: 5s;">111000</div>
+        <div class="code" style="animation-delay: 6s;">000111</div>
+        <div class="code" style="animation-delay: 7s;">100100</div>
+        <div class="code" style="animation-delay: 8s;">010010</div>
+        <div class="code" style="animation-delay: 9s;">101101</div>
+        <div class="code" style="animation-delay: 1.5s;">110101</div>
+        <div class="code" style="animation-delay: 2.5s;">001011</div>
+        <div class="code" style="animation-delay: 3.5s;">111011</div>
+        <div class="code" style="animation-delay: 4.5s;">000011</div>
+        <div class="code" style="animation-delay: 5.5s;">100011</div>
+    </div>
+
+    <div id="packet-tracer">
+        <h3>Packet Tracer</h3>
+        <div id="packets">
+            <!-- Packets will be added here -->
+        </div>
+    </div>
+
+    <div id="wifi-monitor">
+        <div id="traffic">
+            <h4>WIFI Traffic</h4>
+            <p>Upload: <span id="upload-traffic">0 KB/s</span></p>
+            <p>Download: <span id="download-traffic">0 KB/s</span></p>
+        </div>
+        <div id="speed">
+            <h4>WIFI Speed</h4>
+            <p>Current: <span id="current-speed">0 Mbps</span></p>
+            <p>Max: <span id="max-speed">100 Mbps</span></p>
+        </div>
+    </div>
+
+    <script>
+        function addPacket() {
+            const packetsDiv = document.getElementById('packets');
+            const packet = document.createElement('div');
+            const src = ['192.168.1.' + Math.floor(Math.random() * 255), '10.0.0.' + Math.floor(Math.random() * 255)];
+            const dst = ['8.8.8.8', '208.67.222.222', '1.1.1.1'];
+            packet.textContent = `${src[Math.floor(Math.random() * src.length)]} -> ${dst[Math.floor(Math.random() * dst.length)]} | ${Math.floor(Math.random() * 1500)} bytes`;
+            packetsDiv.appendChild(packet);
+            packetsDiv.scrollTop = packetsDiv.scrollHeight;
+            setTimeout(() => {
+                if (packetsDiv.contains(packet)) {
+                    packetsDiv.removeChild(packet);
+                }
+            }, 10000);
+        }
+
+        setInterval(addPacket, 800);
+
+        function updateTraffic() {
+            document.getElementById('upload-traffic').textContent = Math.floor(Math.random() * 500) + ' KB/s';
+            document.getElementById('download-traffic').textContent = Math.floor(Math.random() * 1000) + ' KB/s';
+            document.getElementById('current-speed').textContent = Math.floor(Math.random() * 100) + ' Mbps';
+        }
+
+        setInterval(updateTraffic, 1500);
+    </script>
+</body>
+</html>

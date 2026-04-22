@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZX Bounty Hunter - Skill Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #000000 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(20, 0, 40, 0.9);
+            border: 2px solid #b300ff;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(179, 0, 255, 0.6);
+            padding: 40px;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #b300ff;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #d400ff;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #b300ff;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaaaaa;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            animation: slideIn 0.5s ease-in forwards;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+        .form-group:nth-child(6) { animation-delay: 0.5s; }
+        .form-group:nth-child(7) { animation-delay: 0.6s; }
+        .form-group:nth-child(8) { animation-delay: 0.7s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #b300ff;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #1a002b;
+            border: 1px solid #b300ff;
+            border-radius: 5px;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #d400ff;
+            box-shadow: 0 0 15px rgba(179, 0, 255, 0.5);
+            background: #2a0d4b;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        .question-section {
+            background: rgba(50, 10, 80, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #b300ff;
+        }
+
+        .question-section h3 {
+            color: #d400ff;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+
+        .rating-option label {
+            display: block;
+            padding: 10px;
+            background: #1a002b;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+        }
+
+        .rating-option input[type="radio"]:checked + label {
+            background: #b300ff;
+            color: white;
+            box-shadow: 0 0 15px rgba(179, 0, 255, 0.8);
+        }
+
+        .rating-option label:hover {
+            border-color: #d400ff;
+            transform: scale(1.05);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #b300ff;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            color: white;
+            font-weight: normal;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #b300ff, #d400ff);
+            color: white;
+            box-shadow: 0 0 20px rgba(179, 0, 255, 0.5);
+        }
+
+        button[type="submit"]:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(179, 0, 255, 0.8);
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+        button[type="reset"] {
+            background: #333;
+            color: #b300ff;
+            border: 2px solid #b300ff;
+        }
+
+        button[type="reset"]:hover {
+            background: #b300ff;
+            color: white;
+        }
+
+        .success-message {
+            display: none;
+            background: #0d6b0d;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-align: center;
+            animation: slideIn 0.5s ease-in;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .error-message {
+            display: none;
+            background: #6b0d0d;
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #ff6666;
+            text-align: center;
+            animation: slideIn 0.5s ease-in;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .required {
+            color: #ff6b6b;
+        }
+
+        .rank-info {
+            background: rgba(50, 10, 80, 0.5);
+            border-left: 3px solid #b300ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            color: #aaaaaa;
+        }
+
+        .rank-info strong {
+            color: #d400ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>� ZX BOUNTY HUNTER</h1>
+            <p>Prove your skills and earn your place in the ZX Bounty Program</p>
+        </div>
+
+        <div class="rank-info">
+            <strong>🎯 Bounty Program Tiers:</strong><br>
+            <strong>Applicant</strong> - Entry level | <strong>Bounty Hunter</strong> - Intermediate | 
+            <strong>Elite Hunter</strong> - Advanced | <strong>Demon Eye</strong> - Master/Legend
+        </div>
+
+        <form id="assessmentForm">
+            <!-- Personal Information -->
+            <div class="form-group">
+                <label for="name">Your Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" placeholder="Your name or alias" required>
+            </div>
+
+            <div class="form-group">
+                <label for="discord">Discord Username <span class="required">*</span></label>
+                <input type="text" id="discord" name="discord" placeholder="username#1234 or Discord ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <!-- Programming Experience -->
+            <div class="question-section">
+                <h3>📊 Overall Programming Experience</h3>
+                <label>How many years of programming experience do you have?</label>
+                <div class="rating-group">
+                    <div class="rating-option">
+                        <input type="radio" id="exp1" name="experience" value="0-1" required>
+                        <label for="exp1">0-1 Year</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="exp2" name="experience" value="1-3">
+                        <label for="exp2">1-3 Years</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="exp3" name="experience" value="3-5">
+                        <label for="exp3">3-5 Years</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="exp4" name="experience" value="5+">
+                        <label for="exp4">5+ Years</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Programming Languages -->
+            <div class="question-section">
+                <h3>💻 Programming Languages</h3>
+                <label>Which languages are you proficient in? <span class="required">*</span></label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="python" name="languages" value="Python">
+                        <label for="python">Python</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="javascript" name="languages" value="JavaScript">
+                        <label for="javascript">JavaScript</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="java" name="languages" value="Java">
+                        <label for="java">Java</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cpp" name="languages" value="C++">
+                        <label for="cpp">C++</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="csharp" name="languages" value="C#">
+                        <label for="csharp">C#</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="go" name="languages" value="Go">
+                        <label for="go">Go</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="rust" name="languages" value="Rust">
+                        <label for="rust">Rust</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="typescript" name="languages" value="TypeScript">
+                        <label for="typescript">TypeScript</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="web" name="languages" value="Web Dev (HTML/CSS)">
+                        <label for="web">Web Dev (HTML/CSS)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Development Skills -->
+            <div class="question-section">
+                <h3>🛠️ Development Skills</h3>
+                <label>Rate your proficiency: Frontend Development</label>
+                <div class="rating-group">
+                    <div class="rating-option">
+                        <input type="radio" id="frontend1" name="frontend" value="Beginner">
+                        <label for="frontend1">Beginner</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="frontend2" name="frontend" value="Intermediate">
+                        <label for="frontend2">Intermediate</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="frontend3" name="frontend" value="Advanced">
+                        <label for="frontend3">Advanced</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="frontend4" name="frontend" value="Expert">
+                        <label for="frontend4">Expert</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <label style="color: #b300ff; margin-bottom: 15px;">Rate your proficiency: Backend Development</label>
+                <div class="rating-group">
+                    <div class="rating-option">
+                        <input type="radio" id="backend1" name="backend" value="Beginner">
+                        <label for="backend1">Beginner</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="backend2" name="backend" value="Intermediate">
+                        <label for="backend2">Intermediate</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="backend3" name="backend" value="Advanced">
+                        <label for="backend3">Advanced</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="backend4" name="backend" value="Expert">
+                        <label for="backend4">Expert</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Skills -->
+            <div class="question-section">
+                <h3>🚀 Additional Skills & Knowledge</h3>
+                <label>What additional skills do you have?</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="devops" name="skills" value="DevOps/Deployment">
+                        <label for="devops">DevOps/Deployment</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="database" name="skills" value="Database Management">
+                        <label for="database">Database Management</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cloud" name="skills" value="Cloud Services (AWS, Azure, GCP)">
+                        <label for="cloud">Cloud Services (AWS, Azure, GCP)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="testing" name="skills" value="Testing/QA">
+                        <label for="testing">Testing/QA</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="ml" name="skills" value="Machine Learning/AI">
+                        <label for="ml">Machine Learning/AI</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="security" name="skills" value="Security/Cybersecurity">
+                        <label for="security">Security/Cybersecurity</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mobile" name="skills" value="Mobile Development">
+                        <label for="mobile">Mobile Development</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Framework/Tools Knowledge -->
+            <div class="question-section">
+                <h3>⚙️ Frameworks & Tools</h3>
+                <label>What frameworks and tools are you familiar with?</label>
+                <textarea id="tools" name="tools" placeholder="e.g., React, Vue, Django, Spring Boot, Git, Docker, etc."></textarea>
+            </div>
+
+            <!-- Portfolio/Projects -->
+            <div class="question-section">
+                <h3>📁 Portfolio & Projects</h3>
+                <label>Do you have a portfolio or GitHub profile?</label>
+                <textarea id="portfolio" name="portfolio" placeholder="Link to GitHub, portfolio, or describe your notable projects..."></textarea>
+            </div>
+
+            <!-- Messages and Buttons -->
+            <div id="successMessage" class="success-message">
+                ✅ Application submitted! ZX-Trickster will review your profile shortly.
+            </div>
+
+            <div id="errorMessage" class="error-message">
+                ❌ Error submitting assessment. Please try again.
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Submit Assessment</button>
+                <button type="reset">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Configure your backend URL here
+        // For local testing: http://localhost:5000
+        // For production: https://your-domain.com
+        const BACKEND_URL = 'http://localhost:5000';
+
+        const form = document.getElementById('assessmentForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                discord: formData.get('discord'),
+                email: formData.get('email'),
+                experience: formData.get('experience'),
+                languages: formData.getAll('languages'),
+                frontend: formData.get('frontend'),
+                backend: formData.get('backend'),
+                skills: formData.getAll('skills'),
+                tools: formData.get('tools'),
+                portfolio: formData.get('portfolio'),
+                submittedAt: new Date().toLocaleString()
+            };
+
+            try {
+                // Send to backend
+                const response = await fetch(`${BACKEND_URL}/submit-assessment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    form.reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
